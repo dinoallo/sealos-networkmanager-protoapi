@@ -1,0 +1,27 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "github.com/dinoallo/sealos-networkmanager";
+
+message NewCounter {
+    uint32 endpoint_id = 1;
+}
+
+message Counter {
+    uint32 endpoint_id = 1;
+}
+
+message Dump {
+    uint32 identity = 1;
+    uint64 bytes = 2;
+}
+
+message CounterDumps {
+    uint32 endpoint_id = 1;
+    repeated Dump dumps = 2;
+}
+
+service CountingService {
+    rpc CreateCounter(NewCounter) returns(Counter) {}
+    rpc DumpCounter(Counter) returns(CounterDumps) {}
+}
