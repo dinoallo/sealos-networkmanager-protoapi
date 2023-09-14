@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-option go_package = "github.com/dinoallo/sealos-networkmanager";
+option go_package = "github.com/dinoallo/sealos-networkmanager-agent";
 
 message NewCounter {
     uint32 endpoint_id = 1;
@@ -14,6 +14,7 @@ message Counter {
 message Dump {
     uint32 identity = 1;
     uint64 bytes = 2;
+    uint32 type = 3;
 }
 
 message CounterDumps {
