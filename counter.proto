@@ -22,7 +22,12 @@ message CounterDumps {
     repeated Dump dumps = 2;
 }
 
+message Empty{
+    
+}
+
 service CountingService {
     rpc CreateCounter(NewCounter) returns(Counter) {}
     rpc DumpCounter(Counter) returns(CounterDumps) {}
+    rpc RemoveCounter(Counter) returns(Empty){}
 }

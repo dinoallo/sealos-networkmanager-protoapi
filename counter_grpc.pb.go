@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CountingServiceClient interface {
 	CreateCounter(ctx context.Context, in *NewCounter, opts ...grpc.CallOption) (*Counter, error)
 	DumpCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*CounterDumps, error)
+	RemoveCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type countingServiceClient struct {
@@ -52,12 +53,22 @@ func (c *countingServiceClient) DumpCounter(ctx context.Context, in *Counter, op
 	return out, nil
 }
 
+func (c *countingServiceClient) RemoveCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/proto.CountingService/RemoveCounter", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CountingServiceServer is the server API for CountingService service.
 // All implementations must embed UnimplementedCountingServiceServer
 // for forward compatibility
 type CountingServiceServer interface {
 	CreateCounter(context.Context, *NewCounter) (*Counter, error)
 	DumpCounter(context.Context, *Counter) (*CounterDumps, error)
+	RemoveCounter(context.Context, *Counter) (*Empty, error)
 	mustEmbedUnimplementedCountingServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedCountingServiceServer) CreateCounter(context.Context, *NewCou
 }
 func (UnimplementedCountingServiceServer) DumpCounter(context.Context, *Counter) (*CounterDumps, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DumpCounter not implemented")
+}
+func (UnimplementedCountingServiceServer) RemoveCounter(context.Context, *Counter) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveCounter not implemented")
 }
 func (UnimplementedCountingServiceServer) mustEmbedUnimplementedCountingServiceServer() {}
 
@@ -120,6 +134,24 @@ func _CountingService_DumpCounter_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CountingService_RemoveCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Counter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CountingServiceServer).RemoveCounter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.CountingService/RemoveCounter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CountingServiceServer).RemoveCounter(ctx, req.(*Counter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CountingService_ServiceDesc is the grpc.ServiceDesc for CountingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var CountingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DumpCounter",
 			Handler:    _CountingService_DumpCounter_Handler,
+		},
+		{
+			MethodName: "RemoveCounter",
+			Handler:    _CountingService_RemoveCounter_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
