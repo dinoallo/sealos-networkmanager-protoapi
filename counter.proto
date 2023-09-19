@@ -3,23 +3,15 @@ package proto;
 
 option go_package = "github.com/dinoallo/sealos-networkmanager-agent";
 
-message NewCounter {
-    uint32 endpoint_id = 1;
-}
-
 message Counter {
-    uint32 endpoint_id = 1;
+    int64 endpoint_id = 1;
 }
 
-message Dump {
-    uint32 identity = 1;
-    uint64 bytes = 2;
-    uint32 type = 3;
-}
-
-message CounterDumps {
-    uint32 endpoint_id = 1;
-    repeated Dump dumps = 2;
+message CounterDump {
+    int64 endpoint_id = 1;
+    uint32 identity = 2;
+    uint64 bytes = 3;
+    uint32 type = 4;
 }
 
 message Empty{
@@ -27,7 +19,7 @@ message Empty{
 }
 
 service CountingService {
-    rpc CreateCounter(NewCounter) returns(Counter) {}
-    rpc DumpCounter(Counter) returns(CounterDumps) {}
+    rpc CreateCounter(Counter) returns(Counter) {}
+    rpc DumpCounter(Counter) returns(stream CounterDump) {}
     rpc RemoveCounter(Counter) returns(Empty){}
 }
