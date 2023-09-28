@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.9
-// source: proto/info.proto
+// source: info.proto
 
-package sealos_networkmanager
+package sealos_networkmanager_protoapi
 
 import (
 	context "context"
@@ -128,5 +128,5 @@ var InfoService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "proto/info.proto",
+	Metadata: "info.proto",
 }

@@ -2,7 +2,7 @@ syntax = "proto3";
 package proto;
 
 import "google/protobuf/timestamp.proto";
-import "proto/code.proto";
+import "code.proto";
 option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi";
 
 // The `Status` type defines a logical error model that is suitable for
