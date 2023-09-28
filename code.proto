@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "github.com/dinoallo/sealos-networkmanager";
+option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi";
 
 // The canonical error codes for gRPC APIs.
 //
