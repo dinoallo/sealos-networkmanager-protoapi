@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CountingServiceClient interface {
-	CreateCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*Counter, error)
+	CreateCounter(ctx context.Context, in *CreateCounterRequest, opts ...grpc.CallOption) (*Counter, error)
 	DumpCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (CountingService_DumpCounterClient, error)
 	RemoveCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -35,7 +35,7 @@ func NewCountingServiceClient(cc grpc.ClientConnInterface) CountingServiceClient
 	return &countingServiceClient{cc}
 }
 
-func (c *countingServiceClient) CreateCounter(ctx context.Context, in *Counter, opts ...grpc.CallOption) (*Counter, error) {
+func (c *countingServiceClient) CreateCounter(ctx context.Context, in *CreateCounterRequest, opts ...grpc.CallOption) (*Counter, error) {
 	out := new(Counter)
 	err := c.cc.Invoke(ctx, "/proto.CountingService/CreateCounter", in, out, opts...)
 	if err != nil {
@@ -89,7 +89,7 @@ func (c *countingServiceClient) RemoveCounter(ctx context.Context, in *Counter, 
 // All implementations must embed UnimplementedCountingServiceServer
 // for forward compatibility
 type CountingServiceServer interface {
-	CreateCounter(context.Context, *Counter) (*Counter, error)
+	CreateCounter(context.Context, *CreateCounterRequest) (*Counter, error)
 	DumpCounter(*Counter, CountingService_DumpCounterServer) error
 	RemoveCounter(context.Context, *Counter) (*Empty, error)
 	mustEmbedUnimplementedCountingServiceServer()
@@ -99,7 +99,7 @@ type CountingServiceServer interface {
 type UnimplementedCountingServiceServer struct {
 }
 
-func (UnimplementedCountingServiceServer) CreateCounter(context.Context, *Counter) (*Counter, error) {
+func (UnimplementedCountingServiceServer) CreateCounter(context.Context, *CreateCounterRequest) (*Counter, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCounter not implemented")
 }
 func (UnimplementedCountingServiceServer) DumpCounter(*Counter, CountingService_DumpCounterServer) error {
@@ -122,7 +122,7 @@ func RegisterCountingServiceServer(s grpc.ServiceRegistrar, srv CountingServiceS
 }
 
 func _CountingService_CreateCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Counter)
+	in := new(CreateCounterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func _CountingService_CreateCounter_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/proto.CountingService/CreateCounter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CountingServiceServer).CreateCounter(ctx, req.(*Counter))
+		return srv.(CountingServiceServer).CreateCounter(ctx, req.(*CreateCounterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
