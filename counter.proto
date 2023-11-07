@@ -7,17 +7,20 @@ message Counter {
     int64 endpoint_id = 1;
 }
 
-message CreateCounterRequest {
-    int64 endpoint_id = 1;
-    uint32 type = 2;
-    map<uint32, uint64> initValues = 3;
+enum Direction {
+  Unspec = 0;
+  V4Ingress = 1;
+  V4Egress = 2;
 }
 
-message CounterDump {
+message CreateCounterRequest {
     int64 endpoint_id = 1;
-    uint32 identity = 2;
-    uint64 bytes = 3;
-    uint32 type = 4;
+    Direction direction = 2;
+}
+
+message RemoveCounterRequest {
+    int64 endpoint_id = 1;
+    Direction direction =2;
 }
 
 message Empty{
@@ -25,7 +28,6 @@ message Empty{
 }
 
 service CountingService {
-    rpc CreateCounter(CreateCounterRequest) returns(Counter) {}
-    rpc DumpCounter(Counter) returns(stream CounterDump) {}
-    rpc RemoveCounter(Counter) returns(Empty){}
+    rpc CreateCounter(CreateCounterRequest) returns(Empty){}
+    rpc RemoveCounter(RemoveCounterRequest) returns(Empty){}
 }
