@@ -5,6 +5,8 @@ option go_package = "github.com/dinoallo/sealos-networkmanager-agent";
 
 message Counter {
     int64 endpoint_id = 1;
+    Direction direction = 2;
+    repeated string ip_addrs = 3;
 }
 
 enum Direction {
@@ -14,13 +16,8 @@ enum Direction {
 }
 
 message CreateCounterRequest {
-    int64 endpoint_id = 1;
-    Direction direction = 2;
-}
-
-message RemoveCounterRequest {
-    int64 endpoint_id = 1;
-    Direction direction =2;
+    Counter counter = 1;    
+    bool clean_up = 2;
 }
 
 message Empty{
@@ -29,5 +26,4 @@ message Empty{
 
 service CountingService {
     rpc CreateCounter(CreateCounterRequest) returns(Empty){}
-    rpc RemoveCounter(RemoveCounterRequest) returns(Empty){}
 }
