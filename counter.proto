@@ -20,10 +20,16 @@ message CreateCounterRequest {
     bool clean_up = 2;
 }
 
+message SubscribeRequest {
+    string address = 1;
+    uint32 port = 2;
+}
+
 message Empty{
     
 }
 
 service CountingService {
     rpc CreateCounter(CreateCounterRequest) returns(Empty){}
+    rpc Subscribe(SubscribeRequest) returns(Empty) {}
 }
