@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CountingServiceClient interface {
 	CreateCounter(ctx context.Context, in *CreateCounterRequest, opts ...grpc.CallOption) (*Empty, error)
 	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*Empty, error)
+	DumpTraffic(ctx context.Context, in *DumpTrafficRequest, opts ...grpc.CallOption) (*DumpTrafficResponse, error)
 }
 
 type countingServiceClient struct {
@@ -52,12 +53,22 @@ func (c *countingServiceClient) Subscribe(ctx context.Context, in *SubscribeRequ
 	return out, nil
 }
 
+func (c *countingServiceClient) DumpTraffic(ctx context.Context, in *DumpTrafficRequest, opts ...grpc.CallOption) (*DumpTrafficResponse, error) {
+	out := new(DumpTrafficResponse)
+	err := c.cc.Invoke(ctx, "/proto.CountingService/DumpTraffic", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CountingServiceServer is the server API for CountingService service.
 // All implementations must embed UnimplementedCountingServiceServer
 // for forward compatibility
 type CountingServiceServer interface {
 	CreateCounter(context.Context, *CreateCounterRequest) (*Empty, error)
 	Subscribe(context.Context, *SubscribeRequest) (*Empty, error)
+	DumpTraffic(context.Context, *DumpTrafficRequest) (*DumpTrafficResponse, error)
 	mustEmbedUnimplementedCountingServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedCountingServiceServer) CreateCounter(context.Context, *Create
 }
 func (UnimplementedCountingServiceServer) Subscribe(context.Context, *SubscribeRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Subscribe not implemented")
+}
+func (UnimplementedCountingServiceServer) DumpTraffic(context.Context, *DumpTrafficRequest) (*DumpTrafficResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DumpTraffic not implemented")
 }
 func (UnimplementedCountingServiceServer) mustEmbedUnimplementedCountingServiceServer() {}
 
@@ -120,6 +134,24 @@ func _CountingService_Subscribe_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CountingService_DumpTraffic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DumpTrafficRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CountingServiceServer).DumpTraffic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.CountingService/DumpTraffic",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CountingServiceServer).DumpTraffic(ctx, req.(*DumpTrafficRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CountingService_ServiceDesc is the grpc.ServiceDesc for CountingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var CountingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Subscribe",
 			Handler:    _CountingService_Subscribe_Handler,
+		},
+		{
+			MethodName: "DumpTraffic",
+			Handler:    _CountingService_DumpTraffic_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
