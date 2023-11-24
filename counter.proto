@@ -48,6 +48,6 @@ message Empty{
 service CountingService {
     rpc CreateCounter(CreateCounterRequest) returns(Empty){}
     rpc Subscribe(SubscribeRequest) returns(Empty) {}
-    rpc Unsubscribe(SubscribeRequest) returns(Empty) {}
+    rpc Unsubscribe(UnsubscribeRequest) returns(Empty) {}
     rpc DumpTraffic(DumpTrafficRequest) returns(DumpTrafficResponse) {}
 }
