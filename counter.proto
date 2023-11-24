@@ -25,6 +25,11 @@ message SubscribeRequest {
     uint32 port = 2;
 }
 
+message UnsubscribeRequest {
+    string address = 1;
+    uint32 port = 2;
+}
+
 message DumpTrafficRequest {
     string address = 1;
     string tag = 2;
@@ -43,5 +48,6 @@ message Empty{
 service CountingService {
     rpc CreateCounter(CreateCounterRequest) returns(Empty){}
     rpc Subscribe(SubscribeRequest) returns(Empty) {}
+    rpc Unsubscribe(SubscribeRequest) returns(Empty) {}
     rpc DumpTraffic(DumpTrafficRequest) returns(DumpTrafficResponse) {}
 }

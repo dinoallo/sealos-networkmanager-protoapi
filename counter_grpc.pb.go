@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CountingServiceClient interface {
 	CreateCounter(ctx context.Context, in *CreateCounterRequest, opts ...grpc.CallOption) (*Empty, error)
 	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*Empty, error)
+	Unsubscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*Empty, error)
 	DumpTraffic(ctx context.Context, in *DumpTrafficRequest, opts ...grpc.CallOption) (*DumpTrafficResponse, error)
 }
 
@@ -53,6 +54,15 @@ func (c *countingServiceClient) Subscribe(ctx context.Context, in *SubscribeRequ
 	return out, nil
 }
 
+func (c *countingServiceClient) Unsubscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/proto.CountingService/Unsubscribe", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *countingServiceClient) DumpTraffic(ctx context.Context, in *DumpTrafficRequest, opts ...grpc.CallOption) (*DumpTrafficResponse, error) {
 	out := new(DumpTrafficResponse)
 	err := c.cc.Invoke(ctx, "/proto.CountingService/DumpTraffic", in, out, opts...)
@@ -68,6 +78,7 @@ func (c *countingServiceClient) DumpTraffic(ctx context.Context, in *DumpTraffic
 type CountingServiceServer interface {
 	CreateCounter(context.Context, *CreateCounterRequest) (*Empty, error)
 	Subscribe(context.Context, *SubscribeRequest) (*Empty, error)
+	Unsubscribe(context.Context, *SubscribeRequest) (*Empty, error)
 	DumpTraffic(context.Context, *DumpTrafficRequest) (*DumpTrafficResponse, error)
 	mustEmbedUnimplementedCountingServiceServer()
 }
@@ -81,6 +92,9 @@ func (UnimplementedCountingServiceServer) CreateCounter(context.Context, *Create
 }
 func (UnimplementedCountingServiceServer) Subscribe(context.Context, *SubscribeRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Subscribe not implemented")
+}
+func (UnimplementedCountingServiceServer) Unsubscribe(context.Context, *SubscribeRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Unsubscribe not implemented")
 }
 func (UnimplementedCountingServiceServer) DumpTraffic(context.Context, *DumpTrafficRequest) (*DumpTrafficResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DumpTraffic not implemented")
@@ -134,6 +148,24 @@ func _CountingService_Subscribe_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CountingService_Unsubscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubscribeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CountingServiceServer).Unsubscribe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.CountingService/Unsubscribe",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CountingServiceServer).Unsubscribe(ctx, req.(*SubscribeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CountingService_DumpTraffic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DumpTrafficRequest)
 	if err := dec(in); err != nil {
@@ -166,6 +198,10 @@ var CountingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Subscribe",
 			Handler:    _CountingService_Subscribe_Handler,
+		},
+		{
+			MethodName: "Unsubscribe",
+			Handler:    _CountingService_Unsubscribe_Handler,
 		},
 		{
 			MethodName: "DumpTraffic",
