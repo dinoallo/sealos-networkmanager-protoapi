@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.15.8
-// source: proto/counter.proto
+// source: proto/agent/counter.proto
 
-package sealos_networkmanager_agent
+package agent
 
 import (
 	context "context"
@@ -209,5 +209,5 @@ var CountingService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/counter.proto",
+	Metadata: "proto/agent/counter.proto",
 }
