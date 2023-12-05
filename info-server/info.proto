@@ -3,7 +3,7 @@ package proto;
 
 import "google/protobuf/timestamp.proto";
 import "code.proto";
-option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi";
+option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi/info-server";
 
 // The `Status` type defines a logical error model that is suitable for
 // different programming environments, including REST APIs and RPC APIs. It is
