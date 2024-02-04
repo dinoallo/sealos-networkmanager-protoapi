@@ -1,0 +1,56 @@
+syntax = "proto3";
+package proto;
+
+import "google/protobuf/timestamp.proto";
+import "proto/agent/code.proto";
+option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi/agent";
+
+enum Direction {
+  Unspec = 0;
+  V4Ingress = 1;
+  V4Egress = 2;
+  V6Ingress = 3;
+  V6Egress = 4;
+}
+
+message TrafficCounter {
+    int64 endpoint_id = 1;
+    Direction direction = 2;
+}
+
+message CreateTrafficCounterRequest {
+    TrafficCounter counter = 1;    
+}
+
+message CreateTrafficCounterResponse {
+    Status status = 1;
+}
+
+message DumpTrafficReportResponse {
+    uint32 src_port = 1;
+    uint32 dst_port = 2;
+    uint32 protocol = 3;
+    uint32 family = 4;
+    uint32 data_bytes = 5;
+    uint32 identity = 6;
+    int64 captured_at = 7;
+    google.protobuf.Timestamp timestamp = 8; // response timestamp
+    Direction dir = 9;
+    string src_ip = 10;
+    string dst_ip = 11;
+    Status status = 12;
+}
+
+message Empty {
+
+}
+
+message Status{
+    Code code = 1;
+    string message = 2;
+}
+
+service TrafficService {
+    rpc CreateTrafficCounter(CreateTrafficCounterRequest) returns(CreateTrafficCounterResponse){}
+    rpc DumpTrafficReport(Empty) returns( stream DumpTrafficReportResponse) {}
+}

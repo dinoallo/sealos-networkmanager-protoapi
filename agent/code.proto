@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi";
+option go_package = "github.com/dinoallo/sealos-networkmanager-protoapi/agent";
 
 // The canonical error codes for gRPC APIs.
 //
@@ -179,4 +179,10 @@ enum Code {
   //
   // HTTP Mapping: 500 Internal Server Error
   DATA_LOSS = 15;
+
+  // BPF map not exists
+  //
+  // TrafficServiceError: unable to create traffic counter since the 
+  // corresponding bpf map doesn't exist
+  BPF_MAP_NOT_EXISTS = 17;
 }
