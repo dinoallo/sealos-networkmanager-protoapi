@@ -23,7 +23,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TrafficServiceClient interface {
 	CreateTrafficCounter(ctx context.Context, in *CreateTrafficCounterRequest, opts ...grpc.CallOption) (*CreateTrafficCounterResponse, error)
-	DumpTrafficReport(ctx context.Context, in *Empty, opts ...grpc.CallOption) (TrafficService_DumpTrafficReportClient, error)
 }
 
 type trafficServiceClient struct {
@@ -43,44 +42,11 @@ func (c *trafficServiceClient) CreateTrafficCounter(ctx context.Context, in *Cre
 	return out, nil
 }
 
-func (c *trafficServiceClient) DumpTrafficReport(ctx context.Context, in *Empty, opts ...grpc.CallOption) (TrafficService_DumpTrafficReportClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TrafficService_ServiceDesc.Streams[0], "/proto.TrafficService/DumpTrafficReport", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &trafficServiceDumpTrafficReportClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type TrafficService_DumpTrafficReportClient interface {
-	Recv() (*DumpTrafficReportResponse, error)
-	grpc.ClientStream
-}
-
-type trafficServiceDumpTrafficReportClient struct {
-	grpc.ClientStream
-}
-
-func (x *trafficServiceDumpTrafficReportClient) Recv() (*DumpTrafficReportResponse, error) {
-	m := new(DumpTrafficReportResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // TrafficServiceServer is the server API for TrafficService service.
 // All implementations must embed UnimplementedTrafficServiceServer
 // for forward compatibility
 type TrafficServiceServer interface {
 	CreateTrafficCounter(context.Context, *CreateTrafficCounterRequest) (*CreateTrafficCounterResponse, error)
-	DumpTrafficReport(*Empty, TrafficService_DumpTrafficReportServer) error
 	mustEmbedUnimplementedTrafficServiceServer()
 }
 
@@ -90,9 +56,6 @@ type UnimplementedTrafficServiceServer struct {
 
 func (UnimplementedTrafficServiceServer) CreateTrafficCounter(context.Context, *CreateTrafficCounterRequest) (*CreateTrafficCounterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTrafficCounter not implemented")
-}
-func (UnimplementedTrafficServiceServer) DumpTrafficReport(*Empty, TrafficService_DumpTrafficReportServer) error {
-	return status.Errorf(codes.Unimplemented, "method DumpTrafficReport not implemented")
 }
 func (UnimplementedTrafficServiceServer) mustEmbedUnimplementedTrafficServiceServer() {}
 
@@ -125,27 +88,6 @@ func _TrafficService_CreateTrafficCounter_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TrafficService_DumpTrafficReport_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(TrafficServiceServer).DumpTrafficReport(m, &trafficServiceDumpTrafficReportServer{stream})
-}
-
-type TrafficService_DumpTrafficReportServer interface {
-	Send(*DumpTrafficReportResponse) error
-	grpc.ServerStream
-}
-
-type trafficServiceDumpTrafficReportServer struct {
-	grpc.ServerStream
-}
-
-func (x *trafficServiceDumpTrafficReportServer) Send(m *DumpTrafficReportResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // TrafficService_ServiceDesc is the grpc.ServiceDesc for TrafficService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -158,12 +100,6 @@ var TrafficService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TrafficService_CreateTrafficCounter_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "DumpTrafficReport",
-			Handler:       _TrafficService_DumpTrafficReport_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/agent/traffic.proto",
 }
